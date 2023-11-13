@@ -6,7 +6,7 @@ This is a project starter for react relay and postgraphile.
 
 ```shell
 npm install -g postgraphile
-postgraphile -c 'postgres://root:rootpassword@localhost/Operational' --watch --enhance-graphiql --dynamic-json --export-schema-graphql 'schema.graphql' --classic-ids
+postgraphile -c 'postgres://myuser:mypassword@localhost/localdb' --watch --enhance-graphiql --dynamic-json --export-schema-graphql 'schema.graphql' --classic-ids
 ```
 
 ## Resources
