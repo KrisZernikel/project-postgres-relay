@@ -11,9 +11,9 @@ import { RelayEnvironment } from './RelayEnvironment';
 const { Suspense } = React;
 
 // Define a query
-const RepositoryNameQuery = graphql`
-  query AppRepositoryNameQuery {
-  allPosts {
+const RepositoryPostQuery = graphql`
+  query AppRepositoryPostQuery {
+  posts {
     totalCount
     pageInfo {
       hasNextPage
@@ -34,7 +34,7 @@ const RepositoryNameQuery = graphql`
 
 // Immediately load the query as our app starts. For a real app, we'd move this
 // into our routing configuration, preloading data as we transition to new routes.
-const preloadedQuery = loadQuery(RelayEnvironment, RepositoryNameQuery, {
+const preloadedQuery = loadQuery(RelayEnvironment, RepositoryPostQuery, {
   /* query variables */
 });
 
@@ -47,7 +47,7 @@ const preloadedQuery = loadQuery(RelayEnvironment, RepositoryNameQuery, {
 // - If the query failed, it throws the failure error. For simplicity we aren't
 //   handling the failure case here.
 function App(props) {
-  const data = usePreloadedQuery(RepositoryNameQuery, props.preloadedQuery);
+  const data = usePreloadedQuery(RepositoryPostQuery, props.preloadedQuery);
 
   return (
     <div className="App">
