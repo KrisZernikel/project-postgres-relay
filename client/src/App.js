@@ -1,36 +1,55 @@
-import React from 'react';
+import React, { useTransition } from 'react';
 import './App.css';
 import graphql from 'babel-plugin-relay/macro';
 import {
   RelayEnvironmentProvider,
   loadQuery,
-  usePreloadedQuery,
+  // usePreloadedQuery,
+  useLazyLoadQuery,
+  useFragment,
+  usePaginationFragment
 } from 'react-relay/hooks';
 import { RelayEnvironment } from './RelayEnvironment';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const { Suspense } = React;
 
 // Define a query
 const RepositoryPostQuery = graphql`
   query AppRepositoryPostQuery {
-  posts {
-    totalCount
-    pageInfo {
-      hasNextPage
-    }
-    edges {
-      cursor
-      node {
-        id
-        message
+    ...AppRepositoryPostFragment
+  }
+`;
+
+// const PostFragment = graphql`
+// fragment PostFragment on Query {
+//   message
+// }
+// `
+
+const RepositoryPostFragment = graphql`
+  fragment AppRepositoryPostFragment on Query 
+    @argumentDefinitions (
+      cursor: { type: "Cursor" }
+      count: { type: "Int", defaultValue: 3 }
+    )
+    @refetchable(queryName: "PostRefetchQuery")
+  {
+    posts(after: $cursor, first: $count) @connection(key: "RepositoryPostFragment_posts") {
+      totalCount
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          message
+        }
       }
     }
   }
-}
 `;
-
-
-
 
 // Immediately load the query as our app starts. For a real app, we'd move this
 // into our routing configuration, preloading data as we transition to new routes.
@@ -47,13 +66,33 @@ const preloadedQuery = loadQuery(RelayEnvironment, RepositoryPostQuery, {
 // - If the query failed, it throws the failure error. For simplicity we aren't
 //   handling the failure case here.
 function App(props) {
-  const data = usePreloadedQuery(RepositoryPostQuery, props.preloadedQuery);
+  // const data = usePreloadedQuery(RepositoryPostQuery, props.preloadedQuery);
+
+  const queryData = useLazyLoadQuery(RepositoryPostQuery, {});
+  // const data = useFragment(RepositoryPostFragment, queryData);
+
+  const [isPending, startTransition] = useTransition();
+  const {data, loadNext} = usePaginationFragment(RepositoryPostFragment, queryData);
+  // const onLoadMore = () => loadNext(3);
+  const onLoadMore = () => startTransition(() => {
+    loadNext(3);
+  });
+
+  const storyEdges = data.posts.edges;
 
   return (
     <div className="App">
-      <header className="App-header">
-        {JSON.stringify(data)}
-      </header>
+    <InfiniteScroll
+        pageStart={0}
+        loadMore={onLoadMore}
+        hasMore={data.posts.pageInfo.hasNextPage}
+        loader={<div className="loader" key={0}>Loading ...</div>}
+        useWindow={true}
+    >
+      {storyEdges.map(storyEdge =>
+        <p key={storyEdge.node.id}>{storyEdge.node.message}</p>
+      )}
+    </InfiniteScroll>
     </div>
   );
 }

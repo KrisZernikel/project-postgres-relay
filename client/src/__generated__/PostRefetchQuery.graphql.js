@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0e3d9e30e07c54452c0b18434bf89352>>
+ * @generated SignedSource<<b07061f756eae3ff38a626adbc16d8ae>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,20 +11,48 @@
 var node = (function(){
 var v0 = [
   {
-    "kind": "Literal",
+    "defaultValue": 3,
+    "kind": "LocalArgument",
+    "name": "count"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "cursor"
+  }
+],
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
     "name": "first",
-    "value": 3
+    "variableName": "count"
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "AppRepositoryPostQuery",
+    "name": "PostRefetchQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "count",
+            "variableName": "count"
+          },
+          {
+            "kind": "Variable",
+            "name": "cursor",
+            "variableName": "cursor"
+          }
+        ],
         "kind": "FragmentSpread",
         "name": "AppRepositoryPostFragment"
       }
@@ -34,13 +62,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "AppRepositoryPostQuery",
+    "name": "PostRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": "PostsConnection",
         "kind": "LinkedField",
         "name": "posts",
@@ -129,11 +157,11 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "posts(first:3)"
+        "storageKey": null
       },
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "RepositoryPostFragment_posts",
@@ -143,16 +171,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b0526f2975451544ac7d6fa38aa7cae0",
+    "cacheID": "845417b2144d94bd3556ab64d226b02e",
     "id": null,
     "metadata": {},
-    "name": "AppRepositoryPostQuery",
+    "name": "PostRefetchQuery",
     "operationKind": "query",
-    "text": "query AppRepositoryPostQuery {\n  ...AppRepositoryPostFragment\n}\n\nfragment AppRepositoryPostFragment on Query {\n  posts(first: 3) {\n    totalCount\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        message\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query PostRefetchQuery(\n  $count: Int = 3\n  $cursor: Cursor\n) {\n  ...AppRepositoryPostFragment_1G22uz\n}\n\nfragment AppRepositoryPostFragment_1G22uz on Query {\n  posts(after: $cursor, first: $count) {\n    totalCount\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        message\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-node.hash = "a784413b63b37c67f7678f1c42a788e2";
+node.hash = "04882cd5eee1b757cdd8734919553153";
 
 module.exports = node;
