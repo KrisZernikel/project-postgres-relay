@@ -10,11 +10,18 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: "exit 0"
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   flyway:
     image: flyway/flyway:latest
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     command: -url=jdbc:postgresql://postgres/localdb -user=myuser -password=mypassword migrate
     volumes:
       - ./flyway/sql:/flyway/sql
